@@ -3,14 +3,42 @@ import "./App.css";
 
 function App() {
   // =========================================================
-  // BASIC APPLICATION STATE
+  // APPLICATION STATE
   // =========================================================
 
   const [step, setStep] = useState(1);
+
+  // =========================================================
+  // PATIENT REGISTRATION
+  // =========================================================
+
+  const [patient, setPatient] = useState({
+    name: "",
+    age: "",
+    sex: "",
+    tokenNumber: "",
+    admissionNumber: "",
+    department: "",
+  });
+
+  // =========================================================
+  // LANGUAGE + CONSENT
+  // =========================================================
+
   const [language, setLanguage] = useState("");
   const [consent, setConsent] = useState(false);
 
+  // =========================================================
+  // CHIEF COMPLAINT
+  // =========================================================
+
   const [complaint, setComplaint] = useState("");
+  const [complaintType, setComplaintType] = useState("");
+
+  // =========================================================
+  // CLINICAL QUESTIONS
+  // =========================================================
+
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
 
@@ -20,223 +48,9 @@ function App() {
 
   const [documentType, setDocumentType] = useState("");
   const [documents, setDocuments] = useState([]);
-
   const [processing, setProcessing] = useState(false);
   const [uploadResults, setUploadResults] = useState([]);
   const [uploadError, setUploadError] = useState("");
-
-  // =========================================================
-  // CLINICAL QUESTIONS
-  // =========================================================
-
-  const questions = {
-    EN: [
-      {
-        id: "onset",
-        question: "When did the pain start?",
-        type: "choice",
-        options: [
-          "Today",
-          "Yesterday",
-          "A few days ago",
-          "More than a week ago",
-        ],
-      },
-      {
-        id: "location",
-        question: "Where exactly do you feel the pain?",
-        type: "choice",
-        options: [
-          "Centre of the chest",
-          "Left side of the chest",
-          "Right side of the chest",
-          "Other location",
-        ],
-      },
-      {
-        id: "character",
-        question: "How would you describe the pain?",
-        type: "choice",
-        options: [
-          "Pressure",
-          "Tightness",
-          "Burning",
-          "Sharp",
-          "Dull",
-        ],
-      },
-      {
-        id: "radiation",
-        question:
-          "Does the pain spread to another part of your body?",
-        type: "choice",
-        options: [
-          "No",
-          "Left arm",
-          "Right arm",
-          "Both arms",
-          "Back",
-          "Jaw or neck",
-        ],
-      },
-      {
-        id: "severity",
-        question: "How severe is the pain?",
-        type: "scale",
-        options: [
-          "0",
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
-          "10",
-        ],
-      },
-    ],
-
-    TA: [
-      {
-        id: "onset",
-        question: "வலி எப்போது தொடங்கியது?",
-        type: "choice",
-        options: [
-          "இன்று",
-          "நேற்று",
-          "சில நாட்களுக்கு முன்பு",
-          "ஒரு வாரத்திற்கு முன்பு",
-        ],
-      },
-      {
-        id: "location",
-        question: "வலி சரியாக எங்கு உள்ளது?",
-        type: "choice",
-        options: [
-          "மார்பின் நடுப்பகுதி",
-          "மார்பின் இடப்பக்கம்",
-          "மார்பின் வலப்பக்கம்",
-          "வேறு இடம்",
-        ],
-      },
-      {
-        id: "character",
-        question: "வலியை எவ்வாறு விவரிப்பீர்கள்?",
-        type: "choice",
-        options: [
-          "அழுத்தம்",
-          "இறுக்கம்",
-          "எரிச்சல்",
-          "கூர்மையான வலி",
-          "மந்தமான வலி",
-        ],
-      },
-      {
-        id: "radiation",
-        question:
-          "வலி உடலின் வேறு பகுதிக்கு பரவுகிறதா?",
-        type: "choice",
-        options: [
-          "இல்லை",
-          "இடது கை",
-          "வலது கை",
-          "இரண்டு கைகளும்",
-          "முதுகு",
-          "தாடை அல்லது கழுத்து",
-        ],
-      },
-      {
-        id: "severity",
-        question: "வலியின் தீவிரம் எவ்வளவு?",
-        type: "scale",
-        options: [
-          "0",
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
-          "10",
-        ],
-      },
-    ],
-
-    HI: [
-      {
-        id: "onset",
-        question: "दर्द कब शुरू हुआ?",
-        type: "choice",
-        options: [
-          "आज",
-          "कल",
-          "कुछ दिन पहले",
-          "एक सप्ताह से अधिक पहले",
-        ],
-      },
-      {
-        id: "location",
-        question: "दर्द ठीक कहाँ महसूस हो रहा है?",
-        type: "choice",
-        options: [
-          "छाती के बीच में",
-          "छाती के बाईं ओर",
-          "छाती के दाईं ओर",
-          "अन्य स्थान",
-        ],
-      },
-      {
-        id: "character",
-        question: "आप दर्द का वर्णन कैसे करेंगे?",
-        type: "choice",
-        options: [
-          "दबाव",
-          "जकड़न",
-          "जलन",
-          "तेज़ दर्द",
-          "हल्का दर्द",
-        ],
-      },
-      {
-        id: "radiation",
-        question:
-          "क्या दर्द शरीर के किसी अन्य हिस्से में फैलता है?",
-        type: "choice",
-        options: [
-          "नहीं",
-          "बायां हाथ",
-          "दायां हाथ",
-          "दोनों हाथ",
-          "पीठ",
-          "जबड़ा या गर्दन",
-        ],
-      },
-      {
-        id: "severity",
-        question: "दर्द की तीव्रता कितनी है?",
-        type: "scale",
-        options: [
-          "0",
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
-          "10",
-        ],
-      },
-    ],
-  };
 
   // =========================================================
   // LANGUAGE TEXT
@@ -244,19 +58,75 @@ function App() {
 
   const labels = {
     EN: {
-      history: "CLINICAL HISTORY",
-      chiefComplaint: "CHIEF COMPLAINT",
+      registration: "PATIENT REGISTRATION",
+      registrationTitle: "Patient Registration",
+      registrationDescription:
+        "Enter the patient's basic details before starting the clinical history.",
+
+      patientName: "Patient Name",
+      patientNamePlaceholder: "Enter full name",
+
+      age: "Age",
+      agePlaceholder: "Enter age",
+
+      sex: "Sex",
+      male: "Male",
+      female: "Female",
+      other: "Other",
+
+      tokenNumber: "Token Number",
+      tokenPlaceholder: "Hospital token number",
+
+      admissionNumber: "Admission Number",
+      admissionPlaceholder:
+        "Required for admitted patients",
+
+      department: "Department",
+      departmentPlaceholder: "Select department",
+
+      outpatient: "Outpatient",
+      inpatient: "Inpatient",
+
+      languageConsent: "LANGUAGE & CONSENT",
+      languageTitle: "Language & Consent",
+      languageDescription:
+        "Select the preferred language and provide consent to continue.",
+
+      preferredLanguage: "Preferred Language",
+      consentTitle: "Patient Consent",
+
+      consentText:
+        "I understand that MediKiosk will collect information about my health history and previous medical records to support my clinical consultation.",
+
+      consentText2:
+        "I understand that the information will be reviewed by a healthcare professional and that MediKiosk does not independently diagnose or prescribe treatment.",
+
+      continue: "Continue",
+      back: "Back",
+
+      clinicalHistory: "CLINICAL HISTORY",
 
       mainQuestion:
         "What brings you to the hospital today?",
 
-      placeholder:
-        "Example: I have been having chest pain since yesterday.",
+      complaintDescription:
+        "Select the main health concern or describe it in your own words.",
 
-      continue: "Continue",
+      chestPain: "Chest Pain",
+      fever: "Fever",
+      headache: "Headache",
+      cough: "Cough",
+      abdominalPain: "Abdominal Pain",
+      otherComplaint: "Other",
+
+      complaintPlaceholder:
+        "Describe your main health concern",
+
+      voiceInput: "Voice Input",
+
+      nextQuestion: "Next Question",
+      completeHistory: "Complete History",
       previous: "Previous",
-      next: "Next Question",
-      completed: "Complete History",
 
       question: "QUESTION",
       summary: "REVIEW CLINICAL HISTORY",
@@ -264,50 +134,34 @@ function App() {
       emergency:
         "If you are experiencing a medical emergency, immediately notify hospital staff.",
 
-      otherLocation:
-        "Please specify the location",
+      otherLocation: "Please specify the location",
+      otherLocationPlaceholder: "Enter the specific location",
 
-      otherPlaceholder:
-        "Enter the location",
+      otherComplaintText:
+        "Please describe your health concern",
 
-      documents:
-        "MEDICAL DOCUMENTS",
-
-      documentsTitle:
-        "Previous Medical Records",
+      medicalDocuments: "MEDICAL DOCUMENTS",
+      previousRecords: "Previous Medical Records",
 
       documentsDescription:
-        "Upload previous prescriptions, laboratory reports or discharge summaries. MediKiosk will organize these documents for clinical review.",
+        "Upload previous prescriptions, laboratory reports or discharge summaries. MediKiosk will organize the information for clinical review.",
 
-      prescription:
-        "Prescription",
+      prescription: "Prescription",
+      laboratory: "Laboratory Report",
+      discharge: "Discharge Summary",
+      otherDocument: "Other Medical Document",
 
-      lab:
-        "Laboratory Report",
+      selectDocumentType:
+        "Select the type of document",
 
-      discharge:
-        "Discharge Summary",
+      chooseFile: "Choose File",
 
-      otherDocument:
-        "Other Medical Document",
+      selectedDocuments: "SELECTED DOCUMENTS",
+      noDocuments: "No documents uploaded yet.",
 
-      upload:
-        "Upload Document",
+      remove: "Remove",
 
-      chooseFile:
-        "Choose File",
-
-      selectedDocuments:
-        "SELECTED DOCUMENTS",
-
-      noDocuments:
-        "No documents uploaded yet.",
-
-      remove:
-        "Remove",
-
-      process:
-        "Process Medical Documents",
+      processDocuments: "Process Medical Documents",
 
       supported:
         "Supported formats: PDF, JPG, JPEG, PNG",
@@ -315,75 +169,137 @@ function App() {
       documentTypeRequired:
         "Please select the document type first.",
 
-      physicianReview:
-        "This information is a patient-reported history draft. A healthcare professional must review and verify it before clinical use.",
+      uploading: "Processing documents...",
 
       uploadSuccess:
         "Document successfully received by MediKiosk.",
 
       uploadFailed:
-        "Document upload failed.",
-
-      uploading:
-        "Uploading documents...",
+        "Document processing failed.",
 
       documentsReceived:
-        "Documents Received",
+        "DOCUMENT PROCESSING",
 
       documentsReceivedDescription:
-        "The selected documents have been securely transferred to the MediKiosk processing service.",
+        "MediKiosk has received the selected medical documents.",
 
-      processingStage:
-        "Processing Stage",
+      processingStage: "PROCESSING STATUS",
 
-      backendReceived:
-        "Document received",
+      backendReceived: "Document received",
 
-      backendReceivedDescription:
-        "The document has been received by the MediKiosk backend.",
+      ocr: "Text extraction",
 
-      ocr:
-        "OCR extraction",
+      extraction: "Clinical information extraction",
 
-      ocrDescription:
-        "The next stage will extract printed and handwritten text.",
+      timeline: "Medical timeline",
 
-      extraction:
-        "Clinical information extraction",
+      continueReview: "Continue to Document Review",
 
-      extractionDescription:
-        "Clinical entities such as medicines, diagnoses and investigation values will be identified.",
+      documentReview: "DOCUMENT REVIEW",
 
-      timeline:
-        "Medical timeline",
+      documentReviewTitle:
+        "Review Extracted Medical Information",
 
-      timelineDescription:
-        "Previous records will be organized chronologically.",
+      documentReviewDescription:
+        "The information below was extracted from the uploaded documents and is provided for healthcare professional verification.",
 
-      continueReview:
-        "Continue to Review",
+      extractedInformation:
+        "EXTRACTED INFORMATION",
 
-      back:
-        "Back",
+      patientHistory: "PATIENT HISTORY",
 
-      uploadError:
-        "One or more documents could not be uploaded.",
+      uploadedDocuments: "UPLOADED DOCUMENTS",
+
+      received: "Received",
+
+      verificationRequired:
+        "VERIFICATION REQUIRED",
+
+      verificationText:
+        "Extracted information is transcribed from the uploaded document. It has not been independently verified and must be reviewed by a qualified healthcare professional before clinical use.",
+
+      noReadableText:
+        "No readable text was extracted from this document.",
+
+      clinicalSafety: "CLINICAL SAFETY",
+
+      clinicalSafetyText:
+        "MediKiosk assists with collecting and organizing health information. It does not independently diagnose or prescribe treatment.",
+
+      continueSummary:
+        "Continue to Clinical Summary",
     },
 
     TA: {
-      history: "மருத்துவ வரலாறு",
-      chiefComplaint: "முக்கிய உடல்நலப் பிரச்சனை",
+      registration: "நோயாளர் பதிவு",
+      registrationTitle: "நோயாளர் பதிவு",
+      registrationDescription:
+        "மருத்துவ வரலாற்றைத் தொடங்குவதற்கு முன் நோயாளியின் அடிப்படை விவரங்களை உள்ளிடவும்.",
+
+      patientName: "நோயாளர் பெயர்",
+      patientNamePlaceholder: "முழு பெயரை உள்ளிடவும்",
+
+      age: "வயது",
+      agePlaceholder: "வயதை உள்ளிடவும்",
+
+      sex: "பாலினம்",
+      male: "ஆண்",
+      female: "பெண்",
+      other: "மற்றது",
+
+      tokenNumber: "டோக்கன் எண்",
+      tokenPlaceholder: "மருத்துவமனை டோக்கன் எண்",
+
+      admissionNumber: "அனுமதி எண்",
+      admissionPlaceholder:
+        "அனுமதிக்கப்பட்ட நோயாளிகளுக்கு தேவையானது",
+
+      department: "துறை",
+      departmentPlaceholder: "துறையைத் தேர்ந்தெடுக்கவும்",
+
+      outpatient: "வெளிநோயாளர்",
+      inpatient: "உள்நோயாளர்",
+
+      languageConsent: "மொழி மற்றும் ஒப்புதல்",
+      languageTitle: "மொழி மற்றும் ஒப்புதல்",
+      languageDescription:
+        "தொடர விருப்பமான மொழியைத் தேர்ந்தெடுத்து ஒப்புதல் அளிக்கவும்.",
+
+      preferredLanguage: "விருப்பமான மொழி",
+      consentTitle: "நோயாளர் ஒப்புதல்",
+
+      consentText:
+        "எனது மருத்துவ வரலாறு மற்றும் முந்தைய மருத்துவ பதிவுகளை மருத்துவ ஆலோசனைக்கு உதவுவதற்காக MediKiosk சேகரிக்கும் என்பதை புரிந்துகொள்கிறேன்.",
+
+      consentText2:
+        "இந்த தகவல்கள் சுகாதார நிபுணரால் மதிப்பாய்வு செய்யப்படும் என்பதையும் MediKiosk தானாக நோயறிதல் அல்லது சிகிச்சை வழங்காது என்பதையும் புரிந்துகொள்கிறேன்.",
+
+      continue: "தொடரவும்",
+      back: "மீண்டும்",
+
+      clinicalHistory: "மருத்துவ வரலாறு",
 
       mainQuestion:
         "இன்று மருத்துவமனைக்கு வருவதற்கான முக்கிய காரணம் என்ன?",
 
-      placeholder:
-        "உதாரணம்: நேற்று முதல் எனக்கு மார்பில் வலி உள்ளது.",
+      complaintDescription:
+        "முக்கிய உடல்நலப் பிரச்சனையைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் சொந்த வார்த்தைகளில் விவரிக்கவும்.",
 
-      continue: "தொடரவும்",
+      chestPain: "மார்பு வலி",
+      fever: "காய்ச்சல்",
+      headache: "தலைவலி",
+      cough: "இருமல்",
+      abdominalPain: "வயிற்று வலி",
+      otherComplaint: "மற்றது",
+
+      complaintPlaceholder:
+        "உங்கள் முக்கிய உடல்நலப் பிரச்சனையை விவரிக்கவும்",
+
+      voiceInput: "குரல் உள்ளீடு",
+
+      nextQuestion: "அடுத்த கேள்வி",
+      completeHistory: "வரலாற்றைப் பூர்த்தி செய்யவும்",
       previous: "முந்தையது",
-      next: "அடுத்த கேள்வி",
-      completed: "வரலாற்றைப் பூர்த்தி செய்யவும்",
 
       question: "கேள்வி",
       summary: "மருத்துவ வரலாற்றைப் பார்க்கவும்",
@@ -391,176 +307,212 @@ function App() {
       emergency:
         "மருத்துவ அவசரநிலை ஏற்பட்டால் உடனடியாக மருத்துவமனை ஊழியர்களுக்குத் தெரிவிக்கவும்.",
 
-      otherLocation:
-        "வலியின் இடத்தை குறிப்பிடவும்",
+      otherLocation: "இடத்தை குறிப்பிடவும்",
+      otherLocationPlaceholder:
+        "குறிப்பிட்ட இடத்தை உள்ளிடவும்",
 
-      otherPlaceholder:
-        "இடத்தை உள்ளிடவும்",
+      otherComplaintText:
+        "உங்கள் உடல்நலப் பிரச்சனையை விவரிக்கவும்",
 
-      documents:
-        "மருத்துவ ஆவணங்கள்",
-
-      documentsTitle:
-        "முந்தைய மருத்துவ பதிவுகள்",
+      medicalDocuments: "மருத்துவ ஆவணங்கள்",
+      previousRecords: "முந்தைய மருத்துவ பதிவுகள்",
 
       documentsDescription:
-        "முந்தைய மருந்துச் சீட்டுகள், ஆய்வக அறிக்கைகள் அல்லது மருத்துவமனை வெளியேற்றச் சுருக்கங்களை பதிவேற்றவும்.",
+        "முந்தைய மருந்துச் சீட்டுகள், ஆய்வக அறிக்கைகள் அல்லது வெளியேற்றச் சுருக்கங்களை பதிவேற்றவும்.",
 
-      prescription:
-        "மருந்துச் சீட்டு",
+      prescription: "மருந்துச் சீட்டு",
+      laboratory: "ஆய்வக அறிக்கை",
+      discharge: "வெளியேற்றச் சுருக்கம்",
+      otherDocument: "மற்ற மருத்துவ ஆவணம்",
 
-      lab:
-        "ஆய்வக அறிக்கை",
+      selectDocumentType:
+        "ஆவணத்தின் வகையைத் தேர்ந்தெடுக்கவும்",
 
-      discharge:
-        "மருத்துவமனை வெளியேற்றச் சுருக்கம்",
+      chooseFile: "கோப்பைத் தேர்ந்தெடுக்கவும்",
 
-      otherDocument:
-        "மற்ற மருத்துவ ஆவணம்",
+      selectedDocuments: "தேர்ந்தெடுக்கப்பட்ட ஆவணங்கள்",
+      noDocuments: "இதுவரை எந்த ஆவணமும் பதிவேற்றப்படவில்லை.",
 
-      upload:
-        "ஆவணத்தைப் பதிவேற்றவும்",
+      remove: "நீக்கவும்",
 
-      chooseFile:
-        "கோப்பைத் தேர்ந்தெடுக்கவும்",
-
-      selectedDocuments:
-        "தேர்ந்தெடுக்கப்பட்ட ஆவணங்கள்",
-
-      noDocuments:
-        "இதுவரை எந்த ஆவணமும் பதிவேற்றப்படவில்லை.",
-
-      remove:
-        "நீக்கவும்",
-
-      process:
+      processDocuments:
         "மருத்துவ ஆவணங்களைச் செயலாக்கவும்",
 
       supported:
         "ஆதரிக்கப்படும் வடிவங்கள்: PDF, JPG, JPEG, PNG",
 
       documentTypeRequired:
-        "முதலில் ஆவணத்தின் வகையைத் தேர்ந்தெடுக்கவும்.",
+        "முதலில் ஆவண வகையைத் தேர்ந்தெடுக்கவும்.",
 
-      physicianReview:
-        "இந்த தகவல் நோயாளியால் வழங்கப்பட்ட மருத்துவ வரலாற்றின் வரைவு ஆகும். மருத்துவ பயன்பாட்டிற்கு முன் சுகாதார நிபுணர் சரிபார்க்க வேண்டும்.",
+      uploading: "ஆவணங்கள் செயலாக்கப்படுகின்றன...",
 
       uploadSuccess:
-        "ஆவணம் MediKiosk-க்கு வெற்றிகரமாக பெறப்பட்டது.",
+        "ஆவணம் MediKiosk-ஆல் வெற்றிகரமாக பெறப்பட்டது.",
 
       uploadFailed:
-        "ஆவணப் பதிவேற்றம் தோல்வியடைந்தது.",
-
-      uploading:
-        "ஆவணங்கள் பதிவேற்றப்படுகின்றன...",
+        "ஆவண செயலாக்கம் தோல்வியடைந்தது.",
 
       documentsReceived:
-        "ஆவணங்கள் பெறப்பட்டன",
+        "ஆவண செயலாக்கம்",
 
       documentsReceivedDescription:
-        "தேர்ந்தெடுக்கப்பட்ட ஆவணங்கள் MediKiosk செயலாக்க சேவைக்கு அனுப்பப்பட்டுள்ளன.",
+        "தேர்ந்தெடுக்கப்பட்ட மருத்துவ ஆவணங்களை MediKiosk பெற்றுள்ளது.",
 
-      processingStage:
-        "செயலாக்க நிலை",
+      processingStage: "செயலாக்க நிலை",
 
-      backendReceived:
-        "ஆவணம் பெறப்பட்டது",
+      backendReceived: "ஆவணம் பெறப்பட்டது",
 
-      backendReceivedDescription:
-        "ஆவணம் MediKiosk backend-ஆல் பெறப்பட்டது.",
+      ocr: "உரை பிரித்தெடுத்தல்",
 
-      ocr:
-        "OCR பிரித்தெடுத்தல்",
+      extraction: "மருத்துவ தகவல் பிரித்தெடுத்தல்",
 
-      ocrDescription:
-        "அடுத்த நிலையில் அச்சிடப்பட்ட மற்றும் கையால் எழுதப்பட்ட உரை பிரித்தெடுக்கப்படும்.",
-
-      extraction:
-        "மருத்துவ தகவல் பிரித்தெடுத்தல்",
-
-      extractionDescription:
-        "மருந்துகள், நோயறிதல்கள் மற்றும் ஆய்வு மதிப்புகள் போன்ற தகவல்கள் அடையாளம் காணப்படும்.",
-
-      timeline:
-        "மருத்துவ காலவரிசை",
-
-      timelineDescription:
-        "முந்தைய பதிவுகள் காலவரிசைப்படி ஒழுங்கமைக்கப்படும்.",
+      timeline: "மருத்துவ காலவரிசை",
 
       continueReview:
-        "மதிப்பாய்வுக்குத் தொடரவும்",
+        "ஆவண மதிப்பாய்வுக்குத் தொடரவும்",
 
-      back:
-        "மீண்டும்",
+      documentReview: "ஆவண மதிப்பாய்வு",
 
-      uploadError:
-        "ஒன்று அல்லது அதற்கு மேற்பட்ட ஆவணங்களைப் பதிவேற்ற முடியவில்லை.",
+      documentReviewTitle:
+        "பிரித்தெடுக்கப்பட்ட மருத்துவ தகவலை மதிப்பாய்வு செய்யவும்",
+
+      documentReviewDescription:
+        "கீழே உள்ள தகவல்கள் பதிவேற்றப்பட்ட ஆவணங்களிலிருந்து பிரித்தெடுக்கப்பட்டவை. சுகாதார நிபுணர் அவற்றை சரிபார்க்க வேண்டும்.",
+
+      extractedInformation:
+        "பிரித்தெடுக்கப்பட்ட தகவல்",
+
+      patientHistory: "நோயாளர் வரலாறு",
+
+      uploadedDocuments: "பதிவேற்றப்பட்ட ஆவணங்கள்",
+
+      received: "பெறப்பட்டது",
+
+      verificationRequired:
+        "சரிபார்ப்பு அவசியம்",
+
+      verificationText:
+        "இந்த தகவல் பதிவேற்றப்பட்ட ஆவணத்திலிருந்து பிரித்தெடுக்கப்பட்டுள்ளது. இது தனியாக சரிபார்க்கப்படவில்லை. மருத்துவ பயன்பாட்டிற்கு முன் சுகாதார நிபுணர் சரிபார்க்க வேண்டும்.",
+
+      noReadableText:
+        "இந்த ஆவணத்திலிருந்து படிக்கக்கூடிய உரை பிரித்தெடுக்கப்படவில்லை.",
+
+      clinicalSafety: "மருத்துவ பாதுகாப்பு",
+
+      clinicalSafetyText:
+        "MediKiosk மருத்துவ தகவல்களை சேகரித்து ஒழுங்கமைக்க உதவுகிறது. இது தானாக நோயறிதல் அல்லது சிகிச்சை வழங்காது.",
+
+      continueSummary:
+        "மருத்துவ சுருக்கத்திற்குத் தொடரவும்",
     },
 
     HI: {
-      history: "क्लिनिकल इतिहास",
-      chiefComplaint: "मुख्य स्वास्थ्य समस्या",
+      registration: "रोगी पंजीकरण",
+      registrationTitle: "रोगी पंजीकरण",
+      registrationDescription:
+        "क्लिनिकल इतिहास शुरू करने से पहले रोगी की मूल जानकारी दर्ज करें।",
 
-      mainQuestion:
-        "आज आपको अस्पताल आने का मुख्य कारण क्या है?",
+      patientName: "रोगी का नाम",
+      patientNamePlaceholder: "पूरा नाम दर्ज करें",
 
-      placeholder:
-        "उदाहरण: मुझे कल से सीने में दर्द हो रहा है।",
+      age: "आयु",
+      agePlaceholder: "आयु दर्ज करें",
+
+      sex: "लिंग",
+      male: "पुरुष",
+      female: "महिला",
+      other: "अन्य",
+
+      tokenNumber: "टोकन नंबर",
+      tokenPlaceholder: "अस्पताल टोकन नंबर",
+
+      admissionNumber: "प्रवेश संख्या",
+      admissionPlaceholder:
+        "भर्ती रोगियों के लिए आवश्यक",
+
+      department: "विभाग",
+      departmentPlaceholder: "विभाग चुनें",
+
+      outpatient: "बाह्य रोगी",
+      inpatient: "अंतरंग रोगी",
+
+      languageConsent: "भाषा और सहमति",
+      languageTitle: "भाषा और सहमति",
+      languageDescription:
+        "जारी रखने के लिए पसंदीदा भाषा चुनें और सहमति दें।",
+
+      preferredLanguage: "पसंदीदा भाषा",
+      consentTitle: "रोगी की सहमति",
+
+      consentText:
+        "मैं समझता/समझती हूं कि MediKiosk मेरी स्वास्थ्य जानकारी और पिछले चिकित्सा रिकॉर्ड को मेरी चिकित्सा परामर्श प्रक्रिया में सहायता के लिए एकत्र करेगा।",
+
+      consentText2:
+        "मैं समझता/समझती हूं कि जानकारी की समीक्षा स्वास्थ्य विशेषज्ञ द्वारा की जाएगी और MediKiosk स्वयं निदान या उपचार निर्धारित नहीं करता।",
 
       continue: "जारी रखें",
+      back: "वापस",
+
+      clinicalHistory: "क्लिनिकल इतिहास",
+
+      mainQuestion:
+        "आज अस्पताल आने का मुख्य कारण क्या है?",
+
+      complaintDescription:
+        "मुख्य स्वास्थ्य समस्या चुनें या अपने शब्दों में बताएं।",
+
+      chestPain: "सीने में दर्द",
+      fever: "बुखार",
+      headache: "सिरदर्द",
+      cough: "खांसी",
+      abdominalPain: "पेट दर्द",
+      otherComplaint: "अन्य",
+
+      complaintPlaceholder:
+        "अपनी मुख्य स्वास्थ्य समस्या बताएं",
+
+      voiceInput: "वॉइस इनपुट",
+
+      nextQuestion: "अगला प्रश्न",
+      completeHistory: "इतिहास पूरा करें",
       previous: "पिछला",
-      next: "अगला प्रश्न",
-      completed: "इतिहास पूरा करें",
 
       question: "प्रश्न",
-      summary: "क्लिनिकल इतिहास देखें",
+      summary: "क्लिनिकल इतिहास की समीक्षा",
 
       emergency:
         "यदि आपको कोई चिकित्सीय आपात स्थिति हो रही है, तो तुरंत अस्पताल के कर्मचारियों को सूचित करें।",
 
-      otherLocation:
-        "कृपया स्थान बताएं",
+      otherLocation: "कृपया स्थान बताएं",
+      otherLocationPlaceholder:
+        "विशिष्ट स्थान दर्ज करें",
 
-      otherPlaceholder:
-        "स्थान दर्ज करें",
+      otherComplaintText:
+        "अपनी स्वास्थ्य समस्या बताएं",
 
-      documents:
-        "चिकित्सा दस्तावेज़",
-
-      documentsTitle:
-        "पिछले चिकित्सा रिकॉर्ड",
+      medicalDocuments: "चिकित्सा दस्तावेज़",
+      previousRecords: "पिछले चिकित्सा रिकॉर्ड",
 
       documentsDescription:
         "पिछले प्रिस्क्रिप्शन, प्रयोगशाला रिपोर्ट या डिस्चार्ज सारांश अपलोड करें।",
 
-      prescription:
-        "प्रिस्क्रिप्शन",
+      prescription: "प्रिस्क्रिप्शन",
+      laboratory: "प्रयोगशाला रिपोर्ट",
+      discharge: "डिस्चार्ज सारांश",
+      otherDocument: "अन्य चिकित्सा दस्तावेज़",
 
-      lab:
-        "प्रयोगशाला रिपोर्ट",
+      selectDocumentType:
+        "दस्तावेज़ का प्रकार चुनें",
 
-      discharge:
-        "डिस्चार्ज सारांश",
+      chooseFile: "फ़ाइल चुनें",
 
-      otherDocument:
-        "अन्य चिकित्सा दस्तावेज़",
-
-      upload:
-        "दस्तावेज़ अपलोड करें",
-
-      chooseFile:
-        "फ़ाइल चुनें",
-
-      selectedDocuments:
-        "चयनित दस्तावेज़",
-
+      selectedDocuments: "चयनित दस्तावेज़",
       noDocuments:
         "अभी तक कोई दस्तावेज़ अपलोड नहीं किया गया है।",
 
-      remove:
-        "हटाएं",
+      remove: "हटाएं",
 
-      process:
+      processDocuments:
         "चिकित्सा दस्तावेज़ संसाधित करें",
 
       supported:
@@ -569,75 +521,1333 @@ function App() {
       documentTypeRequired:
         "कृपया पहले दस्तावेज़ का प्रकार चुनें।",
 
-      physicianReview:
-        "यह जानकारी रोगी द्वारा दी गई चिकित्सा इतिहास की प्रारंभिक जानकारी है। चिकित्सीय उपयोग से पहले स्वास्थ्य विशेषज्ञ द्वारा इसकी समीक्षा और पुष्टि की जानी चाहिए।",
+      uploading:
+        "दस्तावेज़ संसाधित किए जा रहे हैं...",
 
       uploadSuccess:
         "दस्तावेज़ MediKiosk द्वारा सफलतापूर्वक प्राप्त किया गया।",
 
       uploadFailed:
-        "दस्तावेज़ अपलोड विफल हुआ।",
-
-      uploading:
-        "दस्तावेज़ अपलोड किए जा रहे हैं...",
+        "दस्तावेज़ संसाधित नहीं किया जा सका।",
 
       documentsReceived:
-        "दस्तावेज़ प्राप्त हुए",
+        "दस्तावेज़ प्रसंस्करण",
 
       documentsReceivedDescription:
-        "चयनित दस्तावेज़ MediKiosk प्रसंस्करण सेवा को भेज दिए गए हैं।",
+        "चयनित चिकित्सा दस्तावेज़ MediKiosk द्वारा प्राप्त किए गए हैं।",
 
-      processingStage:
-        "प्रसंस्करण चरण",
+      processingStage: "प्रसंस्करण स्थिति",
 
       backendReceived:
         "दस्तावेज़ प्राप्त हुआ",
 
-      backendReceivedDescription:
-        "दस्तावेज़ MediKiosk backend द्वारा प्राप्त किया गया है।",
-
-      ocr:
-        "OCR निष्कर्षण",
-
-      ocrDescription:
-        "अगले चरण में मुद्रित और हस्तलिखित पाठ निकाला जाएगा।",
+      ocr: "टेक्स्ट निष्कर्षण",
 
       extraction:
         "चिकित्सीय जानकारी निष्कर्षण",
 
-      extractionDescription:
-        "दवाओं, निदान और जांच परिणामों जैसी जानकारी की पहचान की जाएगी।",
-
       timeline:
         "चिकित्सा समयरेखा",
 
-      timelineDescription:
-        "पिछले रिकॉर्ड को कालानुक्रमिक क्रम में व्यवस्थित किया जाएगा।",
-
       continueReview:
-        "समीक्षा के लिए जारी रखें",
+        "दस्तावेज़ समीक्षा के लिए जारी रखें",
 
-      back:
-        "वापस",
+      documentReview:
+        "दस्तावेज़ समीक्षा",
 
-      uploadError:
-        "एक या अधिक दस्तावेज़ अपलोड नहीं किए जा सके।",
+      documentReviewTitle:
+        "निकाली गई चिकित्सा जानकारी की समीक्षा करें",
+
+      documentReviewDescription:
+        "नीचे दी गई जानकारी अपलोड किए गए दस्तावेज़ों से निकाली गई है और स्वास्थ्य विशेषज्ञ द्वारा सत्यापित की जानी चाहिए।",
+
+      extractedInformation:
+        "निकाली गई जानकारी",
+
+      patientHistory:
+        "रोगी का इतिहास",
+
+      uploadedDocuments:
+        "अपलोड किए गए दस्तावेज़",
+
+      received: "प्राप्त",
+
+      verificationRequired:
+        "सत्यापन आवश्यक",
+
+      verificationText:
+        "यह जानकारी अपलोड किए गए दस्तावेज़ से निकाली गई है। इसे स्वतंत्र रूप से सत्यापित नहीं किया गया है और चिकित्सीय उपयोग से पहले स्वास्थ्य विशेषज्ञ द्वारा इसकी समीक्षा आवश्यक है।",
+
+      noReadableText:
+        "इस दस्तावेज़ से पढ़ने योग्य टेक्स्ट नहीं निकाला गया।",
+
+      clinicalSafety:
+        "चिकित्सीय सुरक्षा",
+
+      clinicalSafetyText:
+        "MediKiosk स्वास्थ्य जानकारी एकत्र करने और व्यवस्थित करने में सहायता करता है। यह स्वयं निदान या उपचार निर्धारित नहीं करता।",
+
+      continueSummary:
+        "क्लिनिकल सारांश के लिए जारी रखें",
     },
   };
 
   const t = labels[language || "EN"];
 
-  const currentQuestions =
-    questions[language || "EN"];
+  // =========================================================
+  // ADAPTIVE QUESTION BANK
+  // =========================================================
 
+  const questionBank = {
+    chest: {
+      EN: [
+        {
+          id: "onset",
+          question: "When did the chest pain start?",
+          type: "choice",
+          options: [
+            "Today",
+            "Yesterday",
+            "A few days ago",
+            "More than a week ago",
+          ],
+        },
+        {
+          id: "location",
+          question: "Where exactly do you feel the pain?",
+          type: "choice",
+          options: [
+            "Centre of the chest",
+            "Left side of the chest",
+            "Right side of the chest",
+            "Other location",
+          ],
+        },
+        {
+          id: "character",
+          question: "How would you describe the pain?",
+          type: "choice",
+          options: [
+            "Pressure",
+            "Tightness",
+            "Burning",
+            "Sharp",
+            "Dull",
+          ],
+        },
+        {
+          id: "radiation",
+          question:
+            "Does the pain spread to another part of your body?",
+          type: "choice",
+          options: [
+            "No",
+            "Left arm",
+            "Right arm",
+            "Both arms",
+            "Back",
+            "Jaw or neck",
+          ],
+        },
+        {
+          id: "severity",
+          question: "How severe is the pain?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "Are you experiencing any other symptoms with the chest pain?",
+          type: "choice",
+          options: [
+            "Shortness of breath",
+            "Sweating",
+            "Nausea",
+            "Dizziness",
+            "None",
+          ],
+        },
+      ],
+
+      TA: [
+        {
+          id: "onset",
+          question: "மார்பு வலி எப்போது தொடங்கியது?",
+          type: "choice",
+          options: [
+            "இன்று",
+            "நேற்று",
+            "சில நாட்களுக்கு முன்பு",
+            "ஒரு வாரத்திற்கு முன்பு",
+          ],
+        },
+        {
+          id: "location",
+          question: "வலி சரியாக எங்கு உள்ளது?",
+          type: "choice",
+          options: [
+            "மார்பின் நடுப்பகுதி",
+            "மார்பின் இடப்பக்கம்",
+            "மார்பின் வலப்பக்கம்",
+            "வேறு இடம்",
+          ],
+        },
+        {
+          id: "character",
+          question: "வலியை எவ்வாறு விவரிப்பீர்கள்?",
+          type: "choice",
+          options: [
+            "அழுத்தம்",
+            "இறுக்கம்",
+            "எரிச்சல்",
+            "கூர்மையான வலி",
+            "மந்தமான வலி",
+          ],
+        },
+        {
+          id: "radiation",
+          question:
+            "வலி உடலின் வேறு பகுதிக்கு பரவுகிறதா?",
+          type: "choice",
+          options: [
+            "இல்லை",
+            "இடது கை",
+            "வலது கை",
+            "இரண்டு கைகளும்",
+            "முதுகு",
+            "தாடை அல்லது கழுத்து",
+          ],
+        },
+        {
+          id: "severity",
+          question: "வலியின் தீவிரம் எவ்வளவு?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "மார்பு வலியுடன் வேறு அறிகுறிகள் உள்ளதா?",
+          type: "choice",
+          options: [
+            "மூச்சுத்திணறல்",
+            "வியர்வை",
+            "குமட்டல்",
+            "தலைச்சுற்றல்",
+            "எதுவும் இல்லை",
+          ],
+        },
+      ],
+
+      HI: [
+        {
+          id: "onset",
+          question: "सीने में दर्द कब शुरू हुआ?",
+          type: "choice",
+          options: [
+            "आज",
+            "कल",
+            "कुछ दिन पहले",
+            "एक सप्ताह से अधिक पहले",
+          ],
+        },
+        {
+          id: "location",
+          question: "दर्द ठीक कहाँ महसूस हो रहा है?",
+          type: "choice",
+          options: [
+            "छाती के बीच में",
+            "छाती के बाईं ओर",
+            "छाती के दाईं ओर",
+            "अन्य स्थान",
+          ],
+        },
+        {
+          id: "character",
+          question: "आप दर्द का वर्णन कैसे करेंगे?",
+          type: "choice",
+          options: [
+            "दबाव",
+            "जकड़न",
+            "जलन",
+            "तेज़ दर्द",
+            "हल्का दर्द",
+          ],
+        },
+        {
+          id: "radiation",
+          question:
+            "क्या दर्द शरीर के किसी अन्य हिस्से में फैलता है?",
+          type: "choice",
+          options: [
+            "नहीं",
+            "बायां हाथ",
+            "दायां हाथ",
+            "दोनों हाथ",
+            "पीठ",
+            "जबड़ा या गर्दन",
+          ],
+        },
+        {
+          id: "severity",
+          question: "दर्द की तीव्रता कितनी है?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "क्या सीने के दर्द के साथ अन्य लक्षण हैं?",
+          type: "choice",
+          options: [
+            "सांस लेने में परेशानी",
+            "पसीना",
+            "मतली",
+            "चक्कर",
+            "कोई नहीं",
+          ],
+        },
+      ],
+    },
+
+    fever: {
+      EN: [
+        {
+          id: "onset",
+          question: "When did the fever start?",
+          type: "choice",
+          options: [
+            "Today",
+            "1–2 days ago",
+            "3–7 days ago",
+            "More than a week ago",
+          ],
+        },
+        {
+          id: "pattern",
+          question: "How does the fever occur?",
+          type: "choice",
+          options: [
+            "Continuous",
+            "Comes and goes",
+            "Mostly at night",
+            "Not sure",
+          ],
+        },
+        {
+          id: "temperature",
+          question:
+            "What was the highest temperature you measured?",
+          type: "text",
+        },
+        {
+          id: "chills",
+          question:
+            "Have you experienced chills or shivering?",
+          type: "choice",
+          options: [
+            "Yes",
+            "No",
+            "Not sure",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "What other symptoms are you experiencing?",
+          type: "choice",
+          options: [
+            "Cough",
+            "Body pain",
+            "Headache",
+            "Vomiting",
+            "Diarrhoea",
+            "None",
+          ],
+        },
+      ],
+
+      TA: [
+        {
+          id: "onset",
+          question: "காய்ச்சல் எப்போது தொடங்கியது?",
+          type: "choice",
+          options: [
+            "இன்று",
+            "1–2 நாட்களுக்கு முன்பு",
+            "3–7 நாட்களுக்கு முன்பு",
+            "ஒரு வாரத்திற்கு மேல்",
+          ],
+        },
+        {
+          id: "pattern",
+          question: "காய்ச்சல் எவ்வாறு வருகிறது?",
+          type: "choice",
+          options: [
+            "தொடர்ச்சியாக",
+            "விட்டு விட்டு",
+            "பெரும்பாலும் இரவில்",
+            "தெரியவில்லை",
+          ],
+        },
+        {
+          id: "temperature",
+          question:
+            "நீங்கள் அளந்த அதிகபட்ச உடல் வெப்பநிலை என்ன?",
+          type: "text",
+        },
+        {
+          id: "chills",
+          question:
+            "குளிர் அல்லது நடுக்கம் ஏற்பட்டதா?",
+          type: "choice",
+          options: [
+            "ஆம்",
+            "இல்லை",
+            "தெரியவில்லை",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "வேறு என்ன அறிகுறிகள் உள்ளன?",
+          type: "choice",
+          options: [
+            "இருமல்",
+            "உடல் வலி",
+            "தலைவலி",
+            "வாந்தி",
+            "வயிற்றுப்போக்கு",
+            "எதுவும் இல்லை",
+          ],
+        },
+      ],
+
+      HI: [
+        {
+          id: "onset",
+          question: "बुखार कब शुरू हुआ?",
+          type: "choice",
+          options: [
+            "आज",
+            "1–2 दिन पहले",
+            "3–7 दिन पहले",
+            "एक सप्ताह से अधिक पहले",
+          ],
+        },
+        {
+          id: "pattern",
+          question: "बुखार कैसे आता है?",
+          type: "choice",
+          options: [
+            "लगातार",
+            "आता-जाता है",
+            "ज्यादातर रात में",
+            "पता नहीं",
+          ],
+        },
+        {
+          id: "temperature",
+          question:
+            "आपने अधिकतम कितना तापमान मापा?",
+          type: "text",
+        },
+        {
+          id: "chills",
+          question:
+            "क्या ठंड या कंपकंपी हुई?",
+          type: "choice",
+          options: [
+            "हाँ",
+            "नहीं",
+            "पता नहीं",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "आपको और कौन से लक्षण हैं?",
+          type: "choice",
+          options: [
+            "खांसी",
+            "शरीर में दर्द",
+            "सिरदर्द",
+            "उल्टी",
+            "दस्त",
+            "कोई नहीं",
+          ],
+        },
+      ],
+    },
+
+    headache: {
+      EN: [
+        {
+          id: "onset",
+          question: "When did the headache start?",
+          type: "choice",
+          options: [
+            "Today",
+            "Yesterday",
+            "A few days ago",
+            "More than a week ago",
+          ],
+        },
+        {
+          id: "location",
+          question: "Where is the headache located?",
+          type: "choice",
+          options: [
+            "Front of head",
+            "Back of head",
+            "One side",
+            "Both sides",
+            "Other location",
+          ],
+        },
+        {
+          id: "character",
+          question: "How would you describe the headache?",
+          type: "choice",
+          options: [
+            "Throbbing",
+            "Pressure",
+            "Sharp",
+            "Dull",
+          ],
+        },
+        {
+          id: "severity",
+          question: "How severe is the headache?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "Are there any other symptoms?",
+          type: "choice",
+          options: [
+            "Vomiting",
+            "Blurred vision",
+            "Dizziness",
+            "Sensitivity to light",
+            "None",
+          ],
+        },
+      ],
+
+      TA: [
+        {
+          id: "onset",
+          question: "தலைவலி எப்போது தொடங்கியது?",
+          type: "choice",
+          options: [
+            "இன்று",
+            "நேற்று",
+            "சில நாட்களுக்கு முன்பு",
+            "ஒரு வாரத்திற்கு மேல்",
+          ],
+        },
+        {
+          id: "location",
+          question: "தலைவலி எங்கு உள்ளது?",
+          type: "choice",
+          options: [
+            "தலையின் முன்பகுதி",
+            "தலையின் பின்பகுதி",
+            "ஒரு பக்கம்",
+            "இரண்டு பக்கமும்",
+            "வேறு இடம்",
+          ],
+        },
+        {
+          id: "character",
+          question:
+            "தலைவலியை எவ்வாறு விவரிப்பீர்கள்?",
+          type: "choice",
+          options: [
+            "துடிப்பு",
+            "அழுத்தம்",
+            "கூர்மையான வலி",
+            "மந்தமான வலி",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "தலைவலியின் தீவிரம் எவ்வளவு?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "வேறு அறிகுறிகள் உள்ளதா?",
+          type: "choice",
+          options: [
+            "வாந்தி",
+            "மங்கலான பார்வை",
+            "தலைச்சுற்றல்",
+            "வெளிச்சத்தை தாங்க முடியாமை",
+            "எதுவும் இல்லை",
+          ],
+        },
+      ],
+
+      HI: [
+        {
+          id: "onset",
+          question: "सिरदर्द कब शुरू हुआ?",
+          type: "choice",
+          options: [
+            "आज",
+            "कल",
+            "कुछ दिन पहले",
+            "एक सप्ताह से अधिक पहले",
+          ],
+        },
+        {
+          id: "location",
+          question: "सिरदर्द कहाँ है?",
+          type: "choice",
+          options: [
+            "सिर के सामने",
+            "सिर के पीछे",
+            "एक तरफ",
+            "दोनों तरफ",
+            "अन्य स्थान",
+          ],
+        },
+        {
+          id: "character",
+          question:
+            "आप सिरदर्द का वर्णन कैसे करेंगे?",
+          type: "choice",
+          options: [
+            "धड़कता हुआ",
+            "दबाव",
+            "तेज़ दर्द",
+            "हल्का दर्द",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "सिरदर्द कितना गंभीर है?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "क्या कोई अन्य लक्षण हैं?",
+          type: "choice",
+          options: [
+            "उल्टी",
+            "धुंधला दिखाई देना",
+            "चक्कर",
+            "रोशनी से परेशानी",
+            "कोई नहीं",
+          ],
+        },
+      ],
+    },
+
+    cough: {
+      EN: [
+        {
+          id: "onset",
+          question: "When did the cough start?",
+          type: "choice",
+          options: [
+            "Today",
+            "A few days ago",
+            "1–3 weeks ago",
+            "More than 3 weeks ago",
+          ],
+        },
+        {
+          id: "type",
+          question: "What type of cough do you have?",
+          type: "choice",
+          options: [
+            "Dry cough",
+            "Cough with phlegm",
+            "Mostly at night",
+            "Not sure",
+          ],
+        },
+        {
+          id: "phlegm",
+          question:
+            "If you have phlegm, what is its appearance?",
+          type: "choice",
+          options: [
+            "Clear",
+            "White",
+            "Yellow",
+            "Green",
+            "Blood-stained",
+            "No phlegm",
+          ],
+        },
+        {
+          id: "breathing",
+          question:
+            "Are you experiencing breathing difficulty?",
+          type: "choice",
+          options: [
+            "Yes",
+            "No",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "Are there any other symptoms?",
+          type: "choice",
+          options: [
+            "Fever",
+            "Chest discomfort",
+            "Runny nose",
+            "Sore throat",
+            "None",
+          ],
+        },
+      ],
+
+      TA: [
+        {
+          id: "onset",
+          question: "இருமல் எப்போது தொடங்கியது?",
+          type: "choice",
+          options: [
+            "இன்று",
+            "சில நாட்களுக்கு முன்பு",
+            "1–3 வாரங்களுக்கு முன்பு",
+            "3 வாரங்களுக்கு மேல்",
+          ],
+        },
+        {
+          id: "type",
+          question: "எந்த வகையான இருமல் உள்ளது?",
+          type: "choice",
+          options: [
+            "உலர் இருமல்",
+            "சளியுடன் இருமல்",
+            "பெரும்பாலும் இரவில்",
+            "தெரியவில்லை",
+          ],
+        },
+        {
+          id: "phlegm",
+          question:
+            "சளி இருந்தால் அதன் நிறம் எப்படி உள்ளது?",
+          type: "choice",
+          options: [
+            "தெளிவு",
+            "வெள்ளை",
+            "மஞ்சள்",
+            "பச்சை",
+            "இரத்தம் கலந்தது",
+            "சளி இல்லை",
+          ],
+        },
+        {
+          id: "breathing",
+          question:
+            "மூச்சு விடுவதில் சிரமம் உள்ளதா?",
+          type: "choice",
+          options: [
+            "ஆம்",
+            "இல்லை",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "வேறு அறிகுறிகள் உள்ளதா?",
+          type: "choice",
+          options: [
+            "காய்ச்சல்",
+            "மார்பு அசௌகரியம்",
+            "மூக்கு ஒழுகுதல்",
+            "தொண்டை வலி",
+            "எதுவும் இல்லை",
+          ],
+        },
+      ],
+
+      HI: [
+        {
+          id: "onset",
+          question: "खांसी कब शुरू हुई?",
+          type: "choice",
+          options: [
+            "आज",
+            "कुछ दिन पहले",
+            "1–3 सप्ताह पहले",
+            "3 सप्ताह से अधिक पहले",
+          ],
+        },
+        {
+          id: "type",
+          question: "आपको किस प्रकार की खांसी है?",
+          type: "choice",
+          options: [
+            "सूखी खांसी",
+            "बलगम वाली खांसी",
+            "ज्यादातर रात में",
+            "पता नहीं",
+          ],
+        },
+        {
+          id: "phlegm",
+          question:
+            "यदि बलगम है, तो उसका रंग कैसा है?",
+          type: "choice",
+          options: [
+            "साफ",
+            "सफेद",
+            "पीला",
+            "हरा",
+            "खून मिला हुआ",
+            "बलगम नहीं",
+          ],
+        },
+        {
+          id: "breathing",
+          question:
+            "क्या सांस लेने में परेशानी है?",
+          type: "choice",
+          options: [
+            "हाँ",
+            "नहीं",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "क्या कोई अन्य लक्षण हैं?",
+          type: "choice",
+          options: [
+            "बुखार",
+            "सीने में परेशानी",
+            "नाक बहना",
+            "गले में दर्द",
+            "कोई नहीं",
+          ],
+        },
+      ],
+    },
+
+    abdominal: {
+      EN: [
+        {
+          id: "onset",
+          question: "When did the abdominal pain start?",
+          type: "choice",
+          options: [
+            "Today",
+            "Yesterday",
+            "A few days ago",
+            "More than a week ago",
+          ],
+        },
+        {
+          id: "location",
+          question:
+            "Where exactly is the abdominal pain?",
+          type: "choice",
+          options: [
+            "Upper abdomen",
+            "Lower abdomen",
+            "Right side",
+            "Left side",
+            "Other location",
+          ],
+        },
+        {
+          id: "character",
+          question:
+            "How would you describe the pain?",
+          type: "choice",
+          options: [
+            "Cramping",
+            "Burning",
+            "Sharp",
+            "Dull",
+            "Pressure",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "How severe is the abdominal pain?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "Are you experiencing any other symptoms?",
+          type: "choice",
+          options: [
+            "Vomiting",
+            "Diarrhoea",
+            "Constipation",
+            "Loss of appetite",
+            "None",
+          ],
+        },
+      ],
+
+      TA: [
+        {
+          id: "onset",
+          question:
+            "வயிற்று வலி எப்போது தொடங்கியது?",
+          type: "choice",
+          options: [
+            "இன்று",
+            "நேற்று",
+            "சில நாட்களுக்கு முன்பு",
+            "ஒரு வாரத்திற்கு மேல்",
+          ],
+        },
+        {
+          id: "location",
+          question:
+            "வயிற்றில் சரியாக எங்கு வலி உள்ளது?",
+          type: "choice",
+          options: [
+            "மேல் வயிறு",
+            "கீழ் வயிறு",
+            "வலது பக்கம்",
+            "இடது பக்கம்",
+            "வேறு இடம்",
+          ],
+        },
+        {
+          id: "character",
+          question:
+            "வலியை எவ்வாறு விவரிப்பீர்கள்?",
+          type: "choice",
+          options: [
+            "பிடிப்பு",
+            "எரிச்சல்",
+            "கூர்மையான வலி",
+            "மந்தமான வலி",
+            "அழுத்தம்",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "வயிற்று வலியின் தீவிரம் எவ்வளவு?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "வேறு அறிகுறிகள் உள்ளதா?",
+          type: "choice",
+          options: [
+            "வாந்தி",
+            "வயிற்றுப்போக்கு",
+            "மலச்சிக்கல்",
+            "பசியின்மை",
+            "எதுவும் இல்லை",
+          ],
+        },
+      ],
+
+      HI: [
+        {
+          id: "onset",
+          question:
+            "पेट दर्द कब शुरू हुआ?",
+          type: "choice",
+          options: [
+            "आज",
+            "कल",
+            "कुछ दिन पहले",
+            "एक सप्ताह से अधिक पहले",
+          ],
+        },
+        {
+          id: "location",
+          question:
+            "पेट में दर्द ठीक कहाँ है?",
+          type: "choice",
+          options: [
+            "ऊपरी पेट",
+            "निचला पेट",
+            "दाईं ओर",
+            "बाईं ओर",
+            "अन्य स्थान",
+          ],
+        },
+        {
+          id: "character",
+          question:
+            "आप दर्द का वर्णन कैसे करेंगे?",
+          type: "choice",
+          options: [
+            "ऐंठन",
+            "जलन",
+            "तेज़ दर्द",
+            "हल्का दर्द",
+            "दबाव",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "पेट दर्द कितना गंभीर है?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "क्या कोई अन्य लक्षण हैं?",
+          type: "choice",
+          options: [
+            "उल्टी",
+            "दस्त",
+            "कब्ज",
+            "भूख में कमी",
+            "कोई नहीं",
+          ],
+        },
+      ],
+    },
+
+    other: {
+      EN: [
+        {
+          id: "onset",
+          question:
+            "When did this health problem start?",
+          type: "choice",
+          options: [
+            "Today",
+            "Yesterday",
+            "A few days ago",
+            "More than a week ago",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "How severe is the problem?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "Are you experiencing any other symptoms?",
+          type: "text",
+        },
+      ],
+
+      TA: [
+        {
+          id: "onset",
+          question:
+            "இந்த உடல்நலப் பிரச்சனை எப்போது தொடங்கியது?",
+          type: "choice",
+          options: [
+            "இன்று",
+            "நேற்று",
+            "சில நாட்களுக்கு முன்பு",
+            "ஒரு வாரத்திற்கு மேல்",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "இந்த பிரச்சனை எவ்வளவு தீவிரமாக உள்ளது?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "வேறு அறிகுறிகள் உள்ளதா?",
+          type: "text",
+        },
+      ],
+
+      HI: [
+        {
+          id: "onset",
+          question:
+            "यह स्वास्थ्य समस्या कब शुरू हुई?",
+          type: "choice",
+          options: [
+            "आज",
+            "कल",
+            "कुछ दिन पहले",
+            "एक सप्ताह से अधिक पहले",
+          ],
+        },
+        {
+          id: "severity",
+          question:
+            "यह समस्या कितनी गंभीर है?",
+          type: "scale",
+          options: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
+        {
+          id: "associated",
+          question:
+            "क्या कोई अन्य लक्षण हैं?",
+          type: "text",
+        },
+      ],
+    },
+  };
+
+  // =========================================================
+  // GET CURRENT QUESTIONS
+  // =========================================================
+
+  const getQuestionSet = () => {
+    const bank = questionBank[complaintType] || questionBank.other;
+
+    return bank[language || "EN"];
+  };
+
+  const currentQuestions = getQuestionSet();
   const currentQuestion =
     currentQuestions[questionIndex];
+
+  // =========================================================
+  // PATIENT REGISTRATION HANDLER
+  // =========================================================
+
+  const updatePatient = (field, value) => {
+    setPatient((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+  };
+
+  const registrationValid =
+    patient.name.trim() &&
+    patient.age &&
+    patient.sex &&
+    patient.tokenNumber.trim() &&
+    patient.department;
+
+  // =========================================================
+  // COMPLAINT SELECTION
+  // =========================================================
+
+  const complaintOptions = [
+    {
+      id: "chest",
+      label: t.chestPain,
+    },
+    {
+      id: "fever",
+      label: t.fever,
+    },
+    {
+      id: "headache",
+      label: t.headache,
+    },
+    {
+      id: "cough",
+      label: t.cough,
+    },
+    {
+      id: "abdominal",
+      label: t.abdominalPain,
+    },
+    {
+      id: "other",
+      label: t.otherComplaint,
+    },
+  ];
+
+  const chooseComplaint = (type) => {
+    setComplaintType(type);
+
+    setAnswers({});
+    setQuestionIndex(0);
+
+    if (type !== "other") {
+      const selected =
+        complaintOptions.find(
+          (item) => item.id === type
+        );
+
+      setComplaint(selected?.label || "");
+    } else {
+      setComplaint("");
+    }
+  };
 
   // =========================================================
   // ANSWER HANDLING
   // =========================================================
 
   const selectAnswer = (answer) => {
+    if (!currentQuestion) {
+      return;
+    }
+
     setAnswers((previous) => ({
       ...previous,
       [currentQuestion.id]: answer,
@@ -645,31 +1855,39 @@ function App() {
   };
 
   const isCurrentAnswerValid = () => {
-    const answer =
-      answers[currentQuestion?.id];
-
-    if (!answer) {
+    if (!currentQuestion) {
       return false;
     }
 
-    // Other location requires additional text.
+    const answer =
+      answers[currentQuestion.id];
+
+    if (!answer || !String(answer).trim()) {
+      return false;
+    }
+
     if (
-      currentQuestion.id === "location" &&
-      (
-        answer === "Other location" ||
-        answer === "வேறு இடம்" ||
-        answer === "अन्य स्थान"
-      )
+      currentQuestion.id === "location"
     ) {
-      return Boolean(
-        answers.locationOther?.trim()
-      );
+      const otherValues = [
+        "Other location",
+        "வேறு இடம்",
+        "अन्य स्थान",
+      ];
+
+      if (
+        otherValues.includes(answer)
+      ) {
+        return Boolean(
+          answers.locationOther?.trim()
+        );
+      }
     }
 
     return true;
   };
 
-  const goNext = () => {
+  const goNextQuestion = () => {
     if (
       questionIndex <
       currentQuestions.length - 1
@@ -682,7 +1900,7 @@ function App() {
     }
   };
 
-  const goPrevious = () => {
+  const goPreviousQuestion = () => {
     if (questionIndex > 0) {
       setQuestionIndex(
         questionIndex - 1
@@ -754,140 +1972,113 @@ function App() {
       )
     );
   };
+//=========================================================
+// SEND DOCUMENT TO EXPRESS BACKEND
+// =========================================================
 
-  // =========================================================
-  // SEND DOCUMENT TO EXPRESS BACKEND
-  // =========================================================
+const processDocuments = async () => {
+  if (documents.length === 0) {
+    return;
+  }
 
-  const processDocuments = async () => {
-    if (documents.length === 0) {
-      return;
-    }
+  setProcessing(true);
+  setUploadError("");
+  setUploadResults([]);
 
-    setProcessing(true);
-    setUploadError("");
-    setUploadResults([]);
+  const results = [];
 
-    const results = [];
+  for (const document of documents) {
+    try {
+      const formData = new FormData();
 
-    for (const document of documents) {
-      try {
-        const formData =
-          new FormData();
+      formData.append(
+        "document",
+        document.file
+      );
 
-        formData.append(
-          "document",
-          document.file
-        );
+      formData.append(
+        "documentType",
+        document.type
+      );
 
-        formData.append(
-          "documentType",
-          document.type
-        );
+      const response = await fetch(
+        "http://localhost:5000/api/documents/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-        const response =
-          await fetch(
-            "http://localhost:5000/api/documents/upload",
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
+      const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(
+      console.log(
+        "MediKiosk backend response:",
+        data
+      );
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message ||
             "Document upload failed"
-          );
-        }
-
-        const data =
-          await response.json();
-
-        results.push({
-          id: document.id,
-
-          name: document.name,
-
-          success: true,
-
-          data,
-        });
-
-      } catch (error) {
-        console.error(
-          "MediKiosk upload error:",
-          error
         );
-
-        results.push({
-          id: document.id,
-
-          name: document.name,
-
-          success: false,
-
-          error:
-            error.message ||
-            t.uploadFailed,
-        });
       }
-    }
 
-    setUploadResults(results);
+      results.push({
+        id: document.id,
+        name: document.name,
+        success: true,
+        data: data,
+      });
 
-    const hasFailure =
-      results.some(
-        (result) =>
-          !result.success
+    } catch (error) {
+      console.error(
+        "MediKiosk upload error:",
+        error
       );
 
-    if (hasFailure) {
-      setUploadError(
-        t.uploadError
-      );
+      results.push({
+        id: document.id,
+        name: document.name,
+        success: false,
+        data: null,
+        error:
+          error.message ||
+          t.uploadFailed,
+      });
     }
+  }
 
-    setDocuments((previous) =>
-      previous.map(
-        (document) => {
-          const result =
-            results.find(
-              (item) =>
-                item.id ===
-                document.id
-            );
+  setUploadResults(results);
 
-          return {
-            ...document,
+  const hasFailure = results.some(
+    (result) => !result.success
+  );
 
-            uploadStatus:
-              result?.success
-                ? "uploaded"
-                : "failed",
-          };
-        }
-      )
+  if (hasFailure) {
+    setUploadError(
+      t.uploadError
     );
+  }
 
-    setProcessing(false);
+  setProcessing(false);
 
-    setStep(7);
-  };
+  // Go to processing result screen
+  setStep(7);
+};
 
   // =========================================================
-  // HELPER
+  // LOCATION CHECK
   // =========================================================
 
   const isOtherLocation =
     currentQuestion?.id ===
       "location" &&
-    (
-      answers.location ===
-        "Other location" ||
-      answers.location ===
-        "வேறு இடம்" ||
-      answers.location ===
-        "अन्य स्थान"
+    [
+      "Other location",
+      "வேறு இடம்",
+      "अन्य स्थान",
+    ].includes(
+      answers.location
     );
 
   // =========================================================
@@ -910,7 +2101,6 @@ function App() {
           </div>
 
           <div>
-
             <div className="brand-name">
               MediKiosk
             </div>
@@ -918,7 +2108,6 @@ function App() {
             <div className="brand-subtitle">
               Digital Clinical Intake System
             </div>
-
           </div>
 
         </div>
@@ -994,7 +2183,7 @@ function App() {
       <main className="main-content">
 
         {/* ===================================================
-            STEP 1 — INTRODUCTION
+            STEP 1 — PATIENT REGISTRATION
         =================================================== */}
 
         {step === 1 && (
@@ -1005,17 +2194,15 @@ function App() {
               <div>
 
                 <div className="section-label">
-                  PATIENT INTAKE
+                  {t.registration}
                 </div>
 
                 <h1>
-                  Welcome to MediKiosk
+                  {t.registrationTitle}
                 </h1>
 
                 <p>
-                  Complete your clinical history
-                  before meeting your healthcare
-                  provider.
+                  {t.registrationDescription}
                 </p>
 
               </div>
@@ -1028,104 +2215,255 @@ function App() {
 
             <div className="divider"></div>
 
-            <div className="information-grid">
+            <div
+              className="registration-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(2, minmax(0, 1fr))",
+                gap: "20px",
+              }}
+            >
 
-              <div className="information-item">
+              {/* NAME */}
 
-                <div className="information-number">
-                  01
-                </div>
+              <div className="additional-input">
 
-                <div>
+                <label>
+                  {t.patientName}
+                </label>
 
-                  <h3>
-                    Guided History
-                  </h3>
-
-                  <p>
-                    Answer structured questions
-                    about your current health
-                    condition.
-                  </p>
-
-                </div>
-
-              </div>
-
-              <div className="information-item">
-
-                <div className="information-number">
-                  02
-                </div>
-
-                <div>
-
-                  <h3>
-                    Medical Documents
-                  </h3>
-
-                  <p>
-                    Previous medical documents
-                    can be digitized and organized.
-                  </p>
-
-                </div>
+                <input
+                  type="text"
+                  value={patient.name}
+                  onChange={(event) =>
+                    updatePatient(
+                      "name",
+                      event.target.value
+                    )
+                  }
+                  placeholder={
+                    t.patientNamePlaceholder
+                  }
+                />
 
               </div>
 
-              <div className="information-item">
+              {/* AGE */}
 
-                <div className="information-number">
-                  03
-                </div>
+              <div className="additional-input">
 
-                <div>
+                <label>
+                  {t.age}
+                </label>
 
-                  <h3>
-                    Clinical Summary
-                  </h3>
+                <input
+                  type="number"
+                  min="0"
+                  max="120"
+                  value={patient.age}
+                  onChange={(event) =>
+                    updatePatient(
+                      "age",
+                      event.target.value
+                    )
+                  }
+                  placeholder={
+                    t.agePlaceholder
+                  }
+                />
 
-                  <p>
-                    Information is organized into
-                    a summary for your healthcare
-                    provider.
-                  </p>
+              </div>
 
-                </div>
+              {/* SEX */}
+
+              <div className="additional-input">
+
+                <label>
+                  {t.sex}
+                </label>
+
+                <select
+                  value={patient.sex}
+                  onChange={(event) =>
+                    updatePatient(
+                      "sex",
+                      event.target.value
+                    )
+                  }
+                >
+
+                  <option value="">
+                    {t.sex}
+                  </option>
+
+                  <option value="Male">
+                    {t.male}
+                  </option>
+
+                  <option value="Female">
+                    {t.female}
+                  </option>
+
+                  <option value="Other">
+                    {t.other}
+                  </option>
+
+                </select>
+
+              </div>
+
+              {/* TOKEN */}
+
+              <div className="additional-input">
+
+                <label>
+                  {t.tokenNumber}
+                </label>
+
+                <input
+                  type="text"
+                  value={
+                    patient.tokenNumber
+                  }
+                  onChange={(event) =>
+                    updatePatient(
+                      "tokenNumber",
+                      event.target.value
+                    )
+                  }
+                  placeholder={
+                    t.tokenPlaceholder
+                  }
+                />
+
+              </div>
+
+              {/* DEPARTMENT */}
+
+              <div className="additional-input">
+
+                <label>
+                  {t.department}
+                </label>
+
+                <select
+                  value={patient.department}
+                  onChange={(event) =>
+                    updatePatient(
+                      "department",
+                      event.target.value
+                    )
+                  }
+                >
+
+                  <option value="">
+                    {t.departmentPlaceholder}
+                  </option>
+
+                  <option value="General Medicine">
+                    General Medicine
+                  </option>
+
+                  <option value="Emergency">
+                    Emergency
+                  </option>
+
+                  <option value="Pediatrics">
+                    Pediatrics
+                  </option>
+
+                  <option value="Ayurveda">
+                    Ayurveda
+                  </option>
+
+                  <option value="Siddha">
+                    Siddha
+                  </option>
+
+                  <option value="ENT">
+                    ENT
+                  </option>
+
+                  <option value="Orthopedics">
+                    Orthopedics
+                  </option>
+
+                  <option value="Cardiology">
+                    Cardiology
+                  </option>
+
+                  <option value="Other">
+                    Other
+                  </option>
+
+                </select>
+
+              </div>
+
+              {/* ADMISSION NUMBER */}
+
+              <div className="additional-input">
+
+                <label>
+                  {t.admissionNumber}
+                </label>
+
+                <input
+                  type="text"
+                  value={
+                    patient.admissionNumber
+                  }
+                  onChange={(event) =>
+                    updatePatient(
+                      "admissionNumber",
+                      event.target.value
+                    )
+                  }
+                  placeholder={
+                    t.admissionPlaceholder
+                  }
+                />
 
               </div>
 
             </div>
 
-            <div className="notice">
+            <div
+              className="notice"
+              style={{
+                marginTop: "24px",
+              }}
+            >
 
               <div className="notice-title">
-                IMPORTANT
+                PATIENT IDENTIFICATION
               </div>
 
               <p>
-                MediKiosk assists with collecting
-                and organizing health information.
-                It does not provide a medical
-                diagnosis.
+                Token number identifies the patient's
+                visit or queue position. Admission number
+                identifies a hospital admission and may
+                remain blank for outpatient visits.
               </p>
 
             </div>
 
             <button
               className="primary-button"
+              disabled={!registrationValid}
               onClick={() =>
                 setStep(2)
               }
             >
-              Begin Patient Registration
+              {t.continue}
             </button>
 
           </section>
         )}
 
         {/* ===================================================
-            STEP 2 — LANGUAGE & CONSENT
+            STEP 2 — LANGUAGE + CONSENT
         =================================================== */}
 
         {step === 2 && (
@@ -1136,16 +2474,15 @@ function App() {
               <div>
 
                 <div className="section-label">
-                  STEP 02
+                  {t.languageConsent}
                 </div>
 
                 <h1>
-                  Language & Consent
+                  {t.languageTitle}
                 </h1>
 
                 <p>
-                  Select your preferred language
-                  for the clinical history process.
+                  {t.languageDescription}
                 </p>
 
               </div>
@@ -1155,7 +2492,7 @@ function App() {
             <div className="divider"></div>
 
             <h2 className="subheading">
-              Preferred Language
+              {t.preferredLanguage}
             </h2>
 
             <div className="language-grid">
@@ -1170,6 +2507,7 @@ function App() {
                   setLanguage("EN")
                 }
               >
+
                 <span className="language-code">
                   EN
                 </span>
@@ -1177,6 +2515,7 @@ function App() {
                 <span className="language-name">
                   English
                 </span>
+
               </button>
 
               <button
@@ -1189,6 +2528,7 @@ function App() {
                   setLanguage("TA")
                 }
               >
+
                 <span className="language-code">
                   TA
                 </span>
@@ -1196,6 +2536,7 @@ function App() {
                 <span className="language-name">
                   தமிழ்
                 </span>
+
               </button>
 
               <button
@@ -1208,6 +2549,7 @@ function App() {
                   setLanguage("HI")
                 }
               >
+
                 <span className="language-code">
                   HI
                 </span>
@@ -1215,6 +2557,7 @@ function App() {
                 <span className="language-name">
                   हिन्दी
                 </span>
+
               </button>
 
             </div>
@@ -1222,7 +2565,7 @@ function App() {
             <div className="divider"></div>
 
             <h2 className="subheading">
-              Patient Consent
+              {t.consentTitle}
             </h2>
 
             <div className="consent-panel">
@@ -1240,20 +2583,10 @@ function App() {
 
               <label htmlFor="consent">
 
-                I understand that MediKiosk
-                will collect information about
-                my health history and previous
-                medical records for the purpose
-                of supporting my clinical
-                consultation.
+                {t.consentText}
 
                 <span>
-                  I understand that the
-                  information will be reviewed
-                  by a healthcare professional
-                  and that MediKiosk does not
-                  independently diagnose or
-                  prescribe treatment.
+                  {t.consentText2}
                 </span>
 
               </label>
@@ -1268,7 +2601,7 @@ function App() {
                   setStep(1)
                 }
               >
-                Back
+                {t.back}
               </button>
 
               <button
@@ -1281,7 +2614,7 @@ function App() {
                   setStep(3)
                 }
               >
-                Continue to Clinical History
+                {t.continue}
               </button>
 
             </div>
@@ -1301,7 +2634,7 @@ function App() {
               <div>
 
                 <div className="section-label">
-                  {t.history}
+                  {t.clinicalHistory}
                 </div>
 
                 <h1>
@@ -1309,9 +2642,7 @@ function App() {
                 </h1>
 
                 <p>
-                  Please describe your main
-                  health concern in your own
-                  words.
+                  {t.complaintDescription}
                 </p>
 
               </div>
@@ -1324,38 +2655,83 @@ function App() {
 
             <div className="divider"></div>
 
-            <div className="clinical-question">
+            <div className="answer-grid">
 
-              <div className="question-number">
-                01
-              </div>
-
-              <div>
-
-                <div className="question-type">
-                  {t.chiefComplaint}
-                </div>
-
-                <h2>
-                  {t.mainQuestion}
-                </h2>
-
-              </div>
+              {complaintOptions.map(
+                (option) => (
+                  <button
+                    key={option.id}
+                    className={
+                      complaintType ===
+                      option.id
+                        ? "answer-card selected"
+                        : "answer-card"
+                    }
+                    onClick={() =>
+                      chooseComplaint(
+                        option.id
+                      )
+                    }
+                  >
+                    {option.label}
+                  </button>
+                )
+              )}
 
             </div>
 
-            <textarea
-              className="clinical-input"
-              value={complaint}
-              onChange={(event) =>
-                setComplaint(
-                  event.target.value
-                )
-              }
-              placeholder={
-                t.placeholder
-              }
-            />
+            {complaintType ===
+              "other" && (
+
+              <div
+                className="additional-input"
+                style={{
+                  marginTop: "20px",
+                }}
+              >
+
+                <label>
+                  {t.otherComplaintText}
+                </label>
+
+                <textarea
+                  className="clinical-input"
+                  value={complaint}
+                  onChange={(event) =>
+                    setComplaint(
+                      event.target.value
+                    )
+                  }
+                  placeholder={
+                    t.complaintPlaceholder
+                  }
+                />
+
+              </div>
+            )}
+
+            {complaintType &&
+              complaintType !== "other" && (
+
+              <div
+                className="notice"
+                style={{
+                  marginTop: "24px",
+                }}
+              >
+
+                <div className="notice-title">
+                  ADAPTIVE HISTORY
+                </div>
+
+                <p>
+                  MediKiosk will now ask
+                  questions relevant to the
+                  selected health concern.
+                </p>
+
+              </div>
+            )}
 
             <div className="input-options">
 
@@ -1363,24 +2739,23 @@ function App() {
                 className="voice-button"
                 onClick={() =>
                   alert(
-                    "Voice recognition will be integrated in the next phase."
+                    "Voice recognition will be integrated with the multilingual voice service."
                   )
                 }
               >
-                Voice Input
+                {t.voiceInput}
               </button>
 
               <button
                 className="touch-button"
                 disabled={
+                  !complaintType ||
                   !complaint.trim()
                 }
                 onClick={() => {
-
+                  setAnswers({});
                   setQuestionIndex(0);
-
                   setStep(4);
-
                 }}
               >
                 {t.continue}
@@ -1402,248 +2777,272 @@ function App() {
         )}
 
         {/* ===================================================
-            STEP 4 — QUESTIONS
+            STEP 4 — ADAPTIVE QUESTIONS
         =================================================== */}
 
         {step === 4 &&
           currentQuestion && (
 
-            <section className="clinical-card">
+          <section className="clinical-card">
 
-              <div className="history-top">
+            <div className="history-top">
 
-                <div>
+              <div>
 
-                  <div className="section-label">
-                    {t.history}
-                  </div>
-
-                  <h1>
-                    {t.chiefComplaint}
-                  </h1>
-
+                <div className="section-label">
+                  {t.clinicalHistory}
                 </div>
 
-                <div className="question-counter">
-
-                  {questionIndex + 1}
-                  {" / "}
-                  {currentQuestions.length}
-
-                </div>
+                <h1>
+                  {complaint}
+                </h1>
 
               </div>
 
-              <div className="clinical-progress">
+              <div className="question-counter">
 
-                <div
-                  className="clinical-progress-fill"
-                  style={{
-                    width:
-                      `${
-                        ((questionIndex + 1) /
-                          currentQuestions.length) *
-                        100
-                      }%`,
-                  }}
-                ></div>
+                {questionIndex + 1}
+                {" / "}
+                {currentQuestions.length}
 
               </div>
 
-              <div className="divider"></div>
+            </div>
 
-              <div className="clinical-question">
+            <div className="clinical-progress">
 
-                <div className="question-number">
+              <div
+                className="clinical-progress-fill"
+                style={{
+                  width:
+                    `${
+                      ((questionIndex + 1) /
+                        currentQuestions.length) *
+                      100
+                    }%`,
+                }}
+              ></div>
 
-                  {String(
-                    questionIndex + 1
-                  ).padStart(2, "0")}
+            </div>
 
-                </div>
+            <div className="divider"></div>
 
-                <div>
+            <div className="clinical-question">
 
-                  <div className="question-type">
-                    {t.question}
-                  </div>
+              <div className="question-number">
 
-                  <h2>
-                    {currentQuestion.question}
-                  </h2>
-
-                </div>
+                {String(
+                  questionIndex + 1
+                ).padStart(2, "0")}
 
               </div>
 
-              {/* CHOICE QUESTIONS */}
+              <div>
 
-              {currentQuestion.type ===
-                "choice" && (
+                <div className="question-type">
+                  {t.question}
+                </div>
 
-                <>
+                <h2>
+                  {currentQuestion.question}
+                </h2>
 
-                  <div className="answer-grid">
+              </div>
 
-                    {currentQuestion.options.map(
-                      (option) => (
+            </div>
 
-                        <button
-                          key={option}
-                          className={
-                            answers[
-                              currentQuestion.id
-                            ] === option
-                              ? "answer-card selected"
-                              : "answer-card"
-                          }
-                          onClick={() =>
-                            selectAnswer(
-                              option
-                            )
-                          }
-                        >
-                          {option}
-                        </button>
+            {/* CHOICE QUESTION */}
 
-                      )
-                    )}
+            {currentQuestion.type ===
+              "choice" && (
 
-                  </div>
+              <div className="answer-grid">
 
-                  {/* OTHER LOCATION */}
+                {currentQuestion.options.map(
+                  (option) => (
 
-                  {isOtherLocation && (
+                    <button
+                      key={option}
+                      className={
+                        answers[
+                          currentQuestion.id
+                        ] === option
+                          ? "answer-card selected"
+                          : "answer-card"
+                      }
+                      onClick={() =>
+                        selectAnswer(
+                          option
+                        )
+                      }
+                    >
+                      {option}
+                    </button>
 
-                    <div className="additional-input">
+                  )
+                )}
 
-                      <label>
-                        {t.otherLocation}
-                      </label>
+              </div>
+            )}
 
-                      <input
-                        type="text"
-                        value={
-                          answers.locationOther ||
-                          ""
+            {/* TEXT QUESTION */}
+
+            {currentQuestion.type ===
+              "text" && (
+
+              <textarea
+                className="clinical-input"
+                value={
+                  answers[
+                    currentQuestion.id
+                  ] || ""
+                }
+                onChange={(event) =>
+                  selectAnswer(
+                    event.target.value
+                  )
+                }
+                placeholder={
+                  language === "TA"
+                    ? "உங்கள் பதிலை உள்ளிடவும்"
+                    : language === "HI"
+                    ? "अपना उत्तर दर्ज करें"
+                    : "Enter your answer"
+                }
+              />
+
+            )}
+
+            {/* SCALE */}
+
+            {currentQuestion.type ===
+              "scale" && (
+
+              <div className="scale-container">
+
+                <div className="scale-labels">
+
+                  <span>
+                    0 — No symptoms
+                  </span>
+
+                  <span>
+                    10 — Most severe
+                  </span>
+
+                </div>
+
+                <div className="scale-grid">
+
+                  {currentQuestion.options.map(
+                    (number) => (
+
+                      <button
+                        key={number}
+                        className={
+                          answers[
+                            currentQuestion.id
+                          ] === number
+                            ? "scale-button selected"
+                            : "scale-button"
                         }
-                        onChange={(event) =>
-                          setAnswers(
-                            (previous) => ({
-                              ...previous,
-
-                              locationOther:
-                                event.target.value,
-                            })
+                        onClick={() =>
+                          selectAnswer(
+                            number
                           )
                         }
-                        placeholder={
-                          t.otherPlaceholder
-                        }
-                      />
+                      >
+                        {number}
+                      </button>
 
-                    </div>
-
+                    )
                   )}
-
-                </>
-
-              )}
-
-              {/* PAIN SCALE */}
-
-              {currentQuestion.type ===
-                "scale" && (
-
-                <div className="scale-container">
-
-                  <div className="scale-labels">
-
-                    <span>
-                      No pain
-                    </span>
-
-                    <span>
-                      Worst possible pain
-                    </span>
-
-                  </div>
-
-                  <div className="scale-grid">
-
-                    {currentQuestion.options.map(
-                      (number) => (
-
-                        <button
-                          key={number}
-                          className={
-                            answers[
-                              currentQuestion.id
-                            ] === number
-                              ? "scale-button selected"
-                              : "scale-button"
-                          }
-                          onClick={() =>
-                            selectAnswer(
-                              number
-                            )
-                          }
-                        >
-                          {number}
-                        </button>
-
-                      )
-                    )}
-
-                  </div>
 
                 </div>
 
-              )}
+              </div>
+            )}
 
-              <div className="button-row">
+            {/* OTHER LOCATION */}
 
-                <button
-                  className="secondary-button"
-                  disabled={
-                    questionIndex === 0
+            {isOtherLocation && (
+
+              <div className="additional-input">
+
+                <label>
+                  {t.otherLocation}
+                </label>
+
+                <input
+                  type="text"
+                  value={
+                    answers.locationOther ||
+                    ""
                   }
-                  onClick={goPrevious}
-                >
-                  {t.previous}
-                </button>
-
-                <button
-                  className="primary-button"
-                  disabled={
-                    !isCurrentAnswerValid()
+                  onChange={(event) =>
+                    setAnswers(
+                      (previous) => ({
+                        ...previous,
+                        locationOther:
+                          event.target.value,
+                      })
+                    )
                   }
-                  onClick={goNext}
-                >
-                  {questionIndex ===
-                  currentQuestions.length - 1
-                    ? t.completed
-                    : t.next}
-                </button>
+                  placeholder={
+                    t.otherLocationPlaceholder
+                  }
+                />
 
               </div>
 
-              <div className="safety-note">
+            )}
 
-                <strong>
-                  Clinical safety:
-                </strong>{" "}
+            <div className="button-row">
 
-                {t.emergency}
+              <button
+                className="secondary-button"
+                disabled={
+                  questionIndex === 0
+                }
+                onClick={
+                  goPreviousQuestion
+                }
+              >
+                {t.previous}
+              </button>
 
-              </div>
+              <button
+                className="primary-button"
+                disabled={
+                  !isCurrentAnswerValid()
+                }
+                onClick={
+                  goNextQuestion
+                }
+              >
+                {questionIndex ===
+                currentQuestions.length - 1
+                  ? t.completeHistory
+                  : t.nextQuestion}
+              </button>
 
-            </section>
+            </div>
 
-          )}
+            <div className="safety-note">
+
+              <strong>
+                Clinical safety:
+              </strong>{" "}
+
+              {t.emergency}
+
+            </div>
+
+          </section>
+        )}
 
         {/* ===================================================
-            STEP 5 — CLINICAL SUMMARY
+            STEP 5 — HISTORY SUMMARY
         =================================================== */}
 
         {step === 5 && (
@@ -1655,7 +3054,7 @@ function App() {
               <div>
 
                 <div className="section-label">
-                  {t.history}
+                  {t.clinicalHistory}
                 </div>
 
                 <h1>
@@ -1673,10 +3072,89 @@ function App() {
 
             <div className="divider"></div>
 
+            {/* PATIENT DETAILS */}
+
             <div className="summary-section">
 
               <div className="summary-title">
-                Chief Complaint
+                PATIENT DETAILS
+              </div>
+
+              <div className="summary-value">
+                {patient.name}
+              </div>
+
+            </div>
+
+            <div className="summary-row">
+
+              <div className="summary-question">
+                Age
+              </div>
+
+              <div className="summary-answer">
+                {patient.age}
+              </div>
+
+            </div>
+
+            <div className="summary-row">
+
+              <div className="summary-question">
+                Sex
+              </div>
+
+              <div className="summary-answer">
+                {patient.sex}
+              </div>
+
+            </div>
+
+            <div className="summary-row">
+
+              <div className="summary-question">
+                Token Number
+              </div>
+
+              <div className="summary-answer">
+                {patient.tokenNumber}
+              </div>
+
+            </div>
+
+            <div className="summary-row">
+
+              <div className="summary-question">
+                Admission Number
+              </div>
+
+              <div className="summary-answer">
+                {patient.admissionNumber ||
+                  "Not provided"}
+              </div>
+
+            </div>
+
+            <div className="summary-row">
+
+              <div className="summary-question">
+                Department
+              </div>
+
+              <div className="summary-answer">
+                {patient.department}
+              </div>
+
+            </div>
+
+            <div className="divider"></div>
+
+            {/* CHIEF COMPLAINT */}
+
+            <div className="summary-section">
+
+              <div className="summary-title">
+                CHIEF COMPLAINT
               </div>
 
               <div className="summary-value">
@@ -1684,6 +3162,8 @@ function App() {
               </div>
 
             </div>
+
+            {/* QUESTIONS */}
 
             {currentQuestions.map(
               (question) => (
@@ -1701,7 +3181,13 @@ function App() {
 
                     {question.id ===
                       "location" &&
-                    isOtherLocation
+                    [
+                      "Other location",
+                      "வேறு இடம்",
+                      "अन्य स्थान",
+                    ].includes(
+                      answers.location
+                    )
                       ? answers.locationOther
                       : answers[
                           question.id
@@ -1721,7 +3207,7 @@ function App() {
               </div>
 
               <p>
-                {t.physicianReview}
+                {t.clinicalSafetyText}
               </p>
 
             </div>
@@ -1736,7 +3222,6 @@ function App() {
             </button>
 
           </section>
-
         )}
 
         {/* ===================================================
@@ -1752,11 +3237,11 @@ function App() {
               <div>
 
                 <div className="section-label">
-                  STEP 04 • {t.documents}
+                  STEP 04 • {t.medicalDocuments}
                 </div>
 
                 <h1>
-                  {t.documentsTitle}
+                  {t.previousRecords}
                 </h1>
 
                 <p>
@@ -1773,8 +3258,6 @@ function App() {
 
             <div className="divider"></div>
 
-            {/* DOCUMENT TYPE */}
-
             <div className="document-section">
 
               <div className="question-type">
@@ -1782,10 +3265,12 @@ function App() {
               </div>
 
               <h2>
-                Select the type of document
+                {t.selectDocumentType}
               </h2>
 
               <div className="document-type-grid">
+
+                {/* PRESCRIPTION */}
 
                 <button
                   className={
@@ -1810,11 +3295,12 @@ function App() {
                   </strong>
 
                   <span>
-                    Prescription / medication
-                    record
+                    Medication record
                   </span>
 
                 </button>
+
+                {/* LAB */}
 
                 <button
                   className={
@@ -1835,7 +3321,7 @@ function App() {
                   </div>
 
                   <strong>
-                    {t.lab}
+                    {t.laboratory}
                   </strong>
 
                   <span>
@@ -1843,6 +3329,8 @@ function App() {
                   </span>
 
                 </button>
+
+                {/* DISCHARGE */}
 
                 <button
                   className={
@@ -1871,6 +3359,8 @@ function App() {
                   </span>
 
                 </button>
+
+                {/* OTHER */}
 
                 <button
                   className={
@@ -1906,12 +3396,12 @@ function App() {
 
             <div className="divider"></div>
 
-            {/* UPLOAD */}
+            {/* FILE UPLOAD */}
 
             <div className="upload-area">
 
               <div className="upload-title">
-                {t.upload}
+                {t.chooseFile}
               </div>
 
               <div className="upload-description">
@@ -2063,12 +3553,12 @@ function App() {
 
               <button
                 className="secondary-button"
+                disabled={processing}
                 onClick={() =>
                   setStep(5)
                 }
-                disabled={processing}
               >
-                {t.previous}
+                {t.back}
               </button>
 
               <button
@@ -2083,17 +3573,16 @@ function App() {
               >
                 {processing
                   ? t.uploading
-                  : t.process}
+                  : t.processDocuments}
               </button>
 
             </div>
 
           </section>
-
         )}
 
         {/* ===================================================
-            STEP 7 — BACKEND PROCESSING
+            STEP 7 — PROCESSING RESULT
         =================================================== */}
 
         {step === 7 && (
@@ -2126,14 +3615,12 @@ function App() {
 
             <div className="divider"></div>
 
-            {/* UPLOAD ERROR */}
-
             {uploadError && (
 
               <div className="notice">
 
                 <div className="notice-title">
-                  UPLOAD STATUS
+                  PROCESSING STATUS
                 </div>
 
                 <p>
@@ -2143,8 +3630,6 @@ function App() {
               </div>
 
             )}
-
-            {/* PROCESSING STATUS */}
 
             <div className="processing-panel">
 
@@ -2161,14 +3646,15 @@ function App() {
                   </strong>
 
                   <p>
-                    {t.backendReceivedDescription}
+                    MediKiosk backend received
+                    the document successfully.
                   </p>
 
                 </div>
 
               </div>
 
-              <div className="processing-step">
+              <div className="processing-step active">
 
                 <span>
                   02
@@ -2181,7 +3667,8 @@ function App() {
                   </strong>
 
                   <p>
-                    {t.ocrDescription}
+                    Text extraction has been
+                    requested from the document.
                   </p>
 
                 </div>
@@ -2201,7 +3688,8 @@ function App() {
                   </strong>
 
                   <p>
-                    {t.extractionDescription}
+                    Extracted information will be
+                    presented for verification.
                   </p>
 
                 </div>
@@ -2221,7 +3709,8 @@ function App() {
                   </strong>
 
                   <p>
-                    {t.timelineDescription}
+                    Medical records can later be
+                    organized chronologically.
                   </p>
 
                 </div>
@@ -2267,10 +3756,11 @@ function App() {
 
                           <div className="document-size">
 
-                            Backend status:
+                            Backend:
                             {" "}
                             {result.data.processing?.status ||
-                              "received"}
+                              result.data.extraction?.status ||
+                              "completed"}
 
                             {" • "}
 
@@ -2279,6 +3769,14 @@ function App() {
                             {result.data.processing?.stage ||
                               "OCR"}
 
+                          </div>
+
+                        )}
+
+                        {!result.success && (
+
+                          <div className="document-size">
+                            {result.error}
                           </div>
 
                         )}
@@ -2297,33 +3795,343 @@ function App() {
             <div className="notice">
 
               <div className="notice-title">
-                CLINICAL SAFETY
+                {t.clinicalSafety}
               </div>
 
               <p>
-                Document processing produces
-                information for clinical review.
-                Extracted information must be
-                verified by a healthcare professional
-                before clinical use.
+                {t.verificationText}
               </p>
 
             </div>
 
             <button
               className="primary-button"
+              disabled={
+                uploadResults.length === 0
+              }
               onClick={() =>
-                console.log(
-                  "MediKiosk upload results:",
-                  uploadResults
-                )
+                setStep(8)
               }
             >
               {t.continueReview}
             </button>
 
           </section>
+        )}
 
+        {/* ===================================================
+            STEP 8 — DOCUMENT REVIEW + ACTUAL EXTRACTED TEXT
+        =================================================== */}
+
+        {step === 8 && (
+
+          <section className="clinical-card">
+
+            <div className="section-header">
+
+              <div>
+
+                <div className="section-label">
+                  {t.documentReview}
+                </div>
+
+                <h1>
+                  {t.documentReviewTitle}
+                </h1>
+
+                <p>
+                  {t.documentReviewDescription}
+                </p>
+
+              </div>
+
+              <div className="medical-symbol">
+                ✓
+              </div>
+
+            </div>
+
+            <div className="divider"></div>
+
+            {/* PATIENT HISTORY */}
+
+            <div className="summary-section">
+
+              <div className="summary-title">
+                {t.patientHistory}
+              </div>
+
+              <div className="summary-value">
+                {patient.name}
+                {" • "}
+                {patient.age}
+                {" • "}
+                {patient.tokenNumber}
+              </div>
+
+            </div>
+
+            <div className="summary-row">
+
+              <div className="summary-question">
+                Chief Complaint
+              </div>
+
+              <div className="summary-answer">
+                {complaint}
+              </div>
+
+            </div>
+
+            <div className="divider"></div>
+
+            {/* UPLOADED DOCUMENTS */}
+
+            <div className="summary-section">
+
+              <div className="summary-title">
+                {t.uploadedDocuments}
+              </div>
+
+              <div className="summary-value">
+                {documents.length}
+                {" "}
+                document
+                {documents.length !== 1
+                  ? "s"
+                  : ""}
+              </div>
+
+            </div>
+
+            {/* DOCUMENT RESULTS */}
+
+            {documents.map(
+              (document) => {
+
+                const result =
+                  uploadResults.find(
+                    (item) =>
+                      item.id ===
+                      document.id
+                  );
+
+                const extractedText =
+                  result?.data?.extraction?.text ||
+                  "";
+
+                const processingMethod =
+                  result?.data?.document?.processingMethod ||
+                  "";
+
+                return (
+
+                  <div
+                    key={
+                      `review-${document.id}`
+                    }
+                    style={{
+                      marginTop: "24px",
+                      border:
+                        "1px solid #dce3ea",
+                      borderRadius: "12px",
+                      padding: "20px",
+                    }}
+                  >
+
+                    {/* DOCUMENT HEADER */}
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent:
+                          "space-between",
+                        alignItems:
+                          "center",
+                        gap: "16px",
+                        marginBottom:
+                          "16px",
+                      }}
+                    >
+
+                      <div>
+
+                        <div
+                          className="summary-title"
+                        >
+                          {document.name}
+                        </div>
+
+                        <div
+                          className="document-meta"
+                        >
+                          {document.type}
+                        </div>
+
+                      </div>
+
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          fontSize: "14px",
+                        }}
+                      >
+                        {result?.success
+                          ? t.received
+                          : t.uploadFailed}
+                      </div>
+
+                    </div>
+
+                    {/* EXTRACTION METHOD */}
+
+                    {processingMethod && (
+
+                      <div
+                        className="document-size"
+                        style={{
+                          marginBottom:
+                            "12px",
+                        }}
+                      >
+                        Processing method:
+                        {" "}
+                        {processingMethod}
+                      </div>
+
+                    )}
+
+                    {/* ACTUAL EXTRACTED TEXT */}
+
+                    {result?.success ? (
+
+                      <>
+
+                        <div
+                          className="question-type"
+                          style={{
+                            marginBottom:
+                              "8px",
+                          }}
+                        >
+                          {t.extractedInformation}
+                        </div>
+
+                        <div
+                          style={{
+                            whiteSpace:
+                              "pre-wrap",
+                            background:
+                              "#f7f9fb",
+                            border:
+                              "1px solid #dbe3ea",
+                            borderRadius:
+                              "10px",
+                            padding:
+                              "16px",
+                            maxHeight:
+                              "420px",
+                            overflowY:
+                              "auto",
+                            lineHeight:
+                              "1.6",
+                            fontSize:
+                              "14px",
+                            color:
+                              "#243447",
+                            fontFamily:
+                              "inherit",
+                          }}
+                        >
+
+                          {extractedText ||
+                            t.noReadableText}
+
+                        </div>
+
+                        {/* VERIFICATION */}
+
+                        <div
+                          className="notice"
+                          style={{
+                            marginTop:
+                              "16px",
+                          }}
+                        >
+
+                          <div className="notice-title">
+                            {t.verificationRequired}
+                          </div>
+
+                          <p>
+                            {result.data
+                              ?.extraction
+                              ?.note ||
+                              t.verificationText}
+                          </p>
+
+                        </div>
+
+                      </>
+
+                    ) : (
+
+                      <div className="notice">
+
+                        <div className="notice-title">
+                          {t.uploadFailed}
+                        </div>
+
+                        <p>
+                          {result?.error ||
+                            t.uploadFailed}
+                        </p>
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                );
+              }
+            )}
+
+            <div className="button-row">
+
+              <button
+                className="secondary-button"
+                onClick={() =>
+                  setStep(7)
+                }
+              >
+                {t.back}
+              </button>
+
+              <button
+                className="primary-button"
+                onClick={() =>
+                  alert(
+                    "Clinical Summary module will be connected in the next development stage."
+                  )
+                }
+              >
+                {t.continueSummary}
+              </button>
+
+            </div>
+
+            <div className="safety-note">
+
+              <strong>
+                {t.clinicalSafety}:
+              </strong>{" "}
+
+              {t.verificationText}
+
+            </div>
+
+          </section>
         )}
 
       </main>
